@@ -7,7 +7,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-// Mapeia a entidade para a tabela professionals
 @Entity
 @Table( name = "professionals" )
 public class Professional
@@ -17,9 +16,8 @@ public class Professional
     @GeneratedValue( strategy = GenerationType.IDENTITY )
     private Long id;
     
-    // Garante a unicidade do registro (ex: CRM, COREN)
-    @Column( name = "council_registration", nullable = false, unique = true, length = 50 )
-    private String councilRegistration;
+    @Column( name = "username", nullable = false, unique = true, length = 50 )
+    private String username;
     
     @Column( name = "name", nullable = false, length = 150 )
     private String name;
@@ -30,7 +28,6 @@ public class Professional
     @Column( name = "active", nullable = false )
     private Boolean active = true;
     
-    // Construtor padrão
     public Professional() {}
     
     // Getters e Setters
@@ -38,9 +35,9 @@ public class Professional
     
     public void setId( Long id ) {this.id = id;}
     
-    public String getCouncilRegistration() {return councilRegistration;}
+    public String getUsername() {return username;}
     
-    public void setCouncilRegistration( String councilRegistration ) {this.councilRegistration = councilRegistration;}
+    public void setUsername( String username ) {this.username = username;}
     
     public String getName() {return name;}
     
