@@ -5,7 +5,6 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
-// Mapeia a entidade para a tabela attendances
 @Entity
 @Table( name = "attendances" )
 public class Attendance
@@ -15,7 +14,6 @@ public class Attendance
     @EmbeddedId
     private AttendanceId id;
     
-    // Registra qual profissional realizou o socorro
     @Column( name = "professional_id", nullable = false )
     private Long professionalId;
     
