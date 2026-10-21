@@ -7,7 +7,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-// Mapeia a entidade para a tabela medications (Catálogo)
 @Entity
 @Table( name = "medications" )
 public class Medication
