@@ -6,22 +6,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
-// Mapeia a entidade para a tabela medical_records
 @Entity
 @Table( name = "medical_records" )
 public class MedicalRecord
 {
     
-    // Utiliza o CPF do paciente como identificador e chave primária
     @Id
     @Column( name = "patient_cpf", length = 11, nullable = false )
     private String patientCpf;
     
-    // Define a data e hora em que a ficha clínica foi iniciada
     @Column( name = "opening_date", nullable = false )
     private LocalDateTime openingDate;
     
-    // Armazena histórico clínico, comorbidades e alergias
     @Column( name = "observations", columnDefinition = "TEXT" )
     private String observations;
     
