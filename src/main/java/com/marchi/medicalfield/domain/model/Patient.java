@@ -6,13 +6,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 
-// Mapeia a entidade para a tabela patients
 @Entity
 @Table( name = "patients" )
 public class Patient
 {
     
-    // O CPF atua como a chave primária natural (sem Auto_Increment)
     @Id
     @Column( name = "cpf", length = 11, nullable = false )
     private String cpf;
