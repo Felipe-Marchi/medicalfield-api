@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Profissionais - MedicalField</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <div th:replace="~{navbar :: mainNav}"></div>
+
+    <!-- Conteúdo Principal -->
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold text-secondary">Cadastro de Profissionais</h3>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome Completo</th>
+                            <th>Usuário</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- O Thymeleaf repete esta tag <tr> para cada profissional no banco -->
+                        <tr th:each="professional : ${professionals}">
+                            <td class="fw-bold" th:text="${professional.id}">1</td>
+                            <td th:text="${professional.name}">Nome</td>
+                            <td th:text="${professional.username}">usuario</td>
+                            <td>
+                                <!-- Operador ternário para mostrar tag verde se ativo, vermelha se inativo -->
+                                <span class="badge" 
+                                      th:classappend="${professional.active} ? 'bg-success' : 'bg-danger'"
+                                      th:text="${professional.active} ? 'Ativo' : 'Inativo'">
+                                </span>
+                            </td>
+                        </tr>
+                        <!-- Mensagem caso a tabela esteja vazia -->
+                        <tr th:if="${#lists.isEmpty(professionals)}">
+                            <td colspan="4" class="text-center text-muted p-4">Nenhum profissional cadastrado.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
