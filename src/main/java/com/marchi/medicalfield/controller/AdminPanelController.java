@@ -1,6 +1,7 @@
 package com.marchi.medicalfield.controller;
 
 import com.marchi.medicalfield.domain.repository.MedicationRepository;
+import com.marchi.medicalfield.domain.repository.PatientRepository;
 import com.marchi.medicalfield.domain.repository.ProfessionalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,9 @@ public class AdminPanelController
     
     @Autowired
     private MedicationRepository medicationRepository;
+    
+    @Autowired
+    private PatientRepository patientRepository;
     
     @GetMapping
     public String dashboard( Model model )
@@ -38,5 +42,12 @@ public class AdminPanelController
     {
         model.addAttribute( "medications", medicationRepository.findAll() );
         return "medications";
+    }
+    
+    @GetMapping( "/patients" )
+    public String listPatients( Model model )
+    {
+        model.addAttribute( "patients", patientRepository.findAll() );
+        return "patients";
     }
 }
