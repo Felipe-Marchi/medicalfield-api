@@ -22,6 +22,10 @@
                             <th>Data e Hora</th>
                             <th>Nome do Paciente</th>
                             <th>CPF</th>
+                            <th>Pressão</th>
+                            <th>Glasgow</th>
+                            <th>Freq. Cardíaca</th>
+                            <th>Saturação (O2)</th>
                             <th>Triagem</th>
                             <th class="text-end">Ações</th>
                         </tr>
@@ -48,6 +52,12 @@
                                 123.456.789-01
                             </td>
                             
+                            <!-- Sinais vitais  -->
+                            <td th:text="${dto.bloodPressure != null ? dto.bloodPressure : '--'}">120/80</td>
+                            <td th:text="${dto.glasgowScale != null ? dto.glasgowScale : '--'}">15</td>
+                            <td th:text="${dto.heartRate != null ? dto.heartRate + ' bpm' : '--'}">80 bpm</td>
+                            <td th:text="${dto.oxygenSaturation != null ? dto.oxygenSaturation + '%' : '--'}">98%</td>
+                            
                             <td>
                                 <!-- Cores dinâmicas para a etiqueta de triagem -->
                                 <span class="badge rounded-pill text-uppercase" 
@@ -60,14 +70,14 @@
                             </td>
                             
                             <td class="text-end">
-                                <!-- Botão para abrir o Prontuário -->
-                                <button type="button" class="btn btn-outline-primary btn-sm me-2" data-bs-toggle="modal" th:data-bs-target="'#modalRecord-' + ${iterStat.index}">
-                                    Ver Prontuário
+                                <!-- Botão 1: Medicamentos -->
+                                <button type="button" class="btn btn-primary btn-sm shadow-sm me-2" data-bs-toggle="modal" th:data-bs-target="'#modalRescue-' + ${iterStat.index}">
+                                    Medicamentos
                                 </button>
-
-                                <!-- Botão para abrir os Detalhes do Resgate -->
-                                <button type="button" class="btn btn-danger btn-sm shadow-sm" data-bs-toggle="modal" th:data-bs-target="'#modalRescue-' + ${iterStat.index}">
-                                    Sinais Vitais
+                            
+                                <!-- Botão 2: Prontuário -->
+                                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" th:data-bs-target="'#modalRecord-' + ${iterStat.index}">
+                                    Prontuário
                                 </button>
 
                                 <!-- MODAL 1: Prontuário Médico -->
@@ -93,45 +103,19 @@
                                     </div>
                                 </div>
 
-                                <!-- MODAL 2: Detalhes do Resgate (Sinais Vitais) -->
+                                <!-- MODAL 2: Medicamentos Administrados -->
                                 <div class="modal fade text-start" th:id="'modalRescue-' + ${iterStat.index}" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content border-0 shadow">
                                             <div class="modal-header bg-dark text-white">
-                                                <h5 class="modal-title">Sinais Vitais do Resgate</h5>
+                                                <!-- Título atualizado -->
+                                                <h5 class="modal-title">Medicamentos Administrados</h5>
                                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
                                             </div>
                                             <div class="modal-body bg-light">
-                                                <div class="row g-3 mb-3">
-                                                    <div class="col-6">
-                                                        <div class="p-3 border bg-white rounded text-center shadow-sm">
-                                                            <h6 class="text-muted mb-1">Pressão Arterial</h6>
-                                                            <h4 class="fw-bold mb-0 text-primary" th:text="${dto.bloodPressure != null ? dto.bloodPressure : '--'}">120/80</h4>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <div class="p-3 border bg-white rounded text-center shadow-sm">
-                                                            <h6 class="text-muted mb-1">Freq. Cardíaca</h6>
-                                                            <h4 class="fw-bold mb-0 text-danger" th:text="${dto.heartRate != null ? dto.heartRate + ' bpm' : '--'}">80 bpm</h4>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <div class="p-3 border bg-white rounded text-center shadow-sm">
-                                                            <h6 class="text-muted mb-1">Saturação (O2)</h6>
-                                                            <h4 class="fw-bold mb-0 text-info" th:text="${dto.oxygenSaturation != null ? dto.oxygenSaturation + '%' : '--'}">98%</h4>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <div class="p-3 border bg-white rounded text-center shadow-sm">
-                                                            <h6 class="text-muted mb-1">Escala de Glasgow</h6>
-                                                            <h4 class="fw-bold mb-0" th:text="${dto.glasgowScale != null ? dto.glasgowScale : '--'}">15</h4>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
-                                                <h6 class="fw-bold mt-4 mb-2 text-secondary">Medicamentos Administrados (JSON)</h6>
+                                                <!-- Caixa limpa exibindo apenas o JSON dos medicamentos -->
                                                 <div class="p-3 bg-white border rounded">
-                                                    <code class="text-dark" th:text="${dto.administeredMedications != null ? dto.administeredMedications : 'Nenhum'}"></code>
+                                                    <code class="text-dark" th:text="${dto.administeredMedications != null ? dto.administeredMedications : 'Nenhum medicamento registrado neste atendimento.'}"></code>
                                                 </div>
                                             </div>
                                             <div class="modal-footer bg-light">
@@ -145,7 +129,7 @@
                         </tr>
                         
                         <tr th:if="${#lists.isEmpty(attendances)}">
-                            <td colspan="5" class="text-center text-muted p-5">
+                            <td colspan="9" class="text-center text-muted p-5">
                                 <h5>Nenhum atendimento registrado</h5>
                                 <p class="mb-0">Aguardando sincronização de dados das unidades móveis.</p>
                             </td>
