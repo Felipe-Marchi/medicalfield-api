@@ -2,22 +2,161 @@
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard</title>
-    <!-- Adicionando o Bootstrap para deixar a tabela e botões bonitos rapidamente -->
+    <title>Painel Administrativo - MedicalField</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
 
     <div th:replace="~{navbar :: mainNav}"></div>
 
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-12 text-center">
-                <h2>Bem-vindo ao Portal de Resgate</h2>
-                <p>Nesta área você poderá visualizar os cadastros de apoio e os registros de atendimento.</p>
+    <div class="container-fluid mt-4 px-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold text-secondary">Painel de Atendimentos</h3>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <table class="table table-hover table-striped mb-0 align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Data e Hora</th>
+                            <th>Nome do Paciente</th>
+                            <th>CPF</th>
+                            <th>Triagem</th>
+                            <th class="text-end">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- O iterStat fornece o índice da linha para gerar IDs únicos para as janelas (Modais) -->
+                        <tr th:each="dto, iterStat : ${attendances}">
+                            
+                            <!-- Data na primeira linha em negrito, hora na linha de baixo menor e em cinza -->
+                            <td>
+                                <span class="fw-bold" th:text="${#temporals.format(dto.attendanceDatetime, 'dd/MM/yyyy')}">
+                                    01/01/2026
+                                </span>
+                                <br>
+                                <small class="text-muted" th:text="${#temporals.format(dto.attendanceDatetime, 'HH:mm')}">
+                                    14:30
+                                </small>
+                            </td>
+                            
+                            <td th:text="${dto.patientName}">João da Silva</td>
+                            
+                            <!-- Máscara do CPF -->
+                            <td th:text="${#strings.substring(dto.patientCpf, 0, 3) + '.' + #strings.substring(dto.patientCpf, 3, 6) + '.' + #strings.substring(dto.patientCpf, 6, 9) + '-' + #strings.substring(dto.patientCpf, 9, 11)}">
+                                123.456.789-01
+                            </td>
+                            
+                            <td>
+                                <!-- Cores dinâmicas para a etiqueta de triagem -->
+                                <span class="badge rounded-pill text-uppercase" 
+                                      th:classappend="${#strings.equalsIgnoreCase(dto.triageClassification, 'Vermelho')} ? 'bg-danger' : 
+                                                     (${#strings.equalsIgnoreCase(dto.triageClassification, 'Amarelo')} ? 'bg-warning text-dark' : 
+                                                     (${#strings.equalsIgnoreCase(dto.triageClassification, 'Verde')} ? 'bg-success' : 'bg-secondary'))"
+                                      th:text="${dto.triageClassification}">
+                                    VERMELHO
+                                </span>
+                            </td>
+                            
+                            <td class="text-end">
+                                <!-- Botão para abrir o Prontuário -->
+                                <button type="button" class="btn btn-outline-primary btn-sm me-2" data-bs-toggle="modal" th:data-bs-target="'#modalRecord-' + ${iterStat.index}">
+                                    Ver Prontuário
+                                </button>
+
+                                <!-- Botão para abrir os Detalhes do Resgate -->
+                                <button type="button" class="btn btn-danger btn-sm shadow-sm" data-bs-toggle="modal" th:data-bs-target="'#modalRescue-' + ${iterStat.index}">
+                                    Sinais Vitais
+                                </button>
+
+                                <!-- MODAL 1: Prontuário Médico -->
+                                <div class="modal fade text-start" th:id="'modalRecord-' + ${iterStat.index}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-primary text-white">
+                                                <h5 class="modal-title">Observações do Prontuário</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h6 class="fw-bold" th:text="${dto.patientName}">Nome do Paciente</h6>
+                                                <hr>
+                                                <!-- Se não houver observações, exibe uma mensagem padrão -->
+                                                <p class="mb-0" style="white-space: pre-wrap;" 
+                                                   th:text="${dto.medicalRecordObservations != null} ? ${dto.medicalRecordObservations} : 'Nenhuma observação registrada para este paciente.'">
+                                                </p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- MODAL 2: Detalhes do Resgate (Sinais Vitais) -->
+                                <div class="modal fade text-start" th:id="'modalRescue-' + ${iterStat.index}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content border-0 shadow">
+                                            <div class="modal-header bg-dark text-white">
+                                                <h5 class="modal-title">Sinais Vitais do Resgate</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                            </div>
+                                            <div class="modal-body bg-light">
+                                                <div class="row g-3 mb-3">
+                                                    <div class="col-6">
+                                                        <div class="p-3 border bg-white rounded text-center shadow-sm">
+                                                            <h6 class="text-muted mb-1">Pressão Arterial</h6>
+                                                            <h4 class="fw-bold mb-0 text-primary" th:text="${dto.bloodPressure != null ? dto.bloodPressure : '--'}">120/80</h4>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="p-3 border bg-white rounded text-center shadow-sm">
+                                                            <h6 class="text-muted mb-1">Freq. Cardíaca</h6>
+                                                            <h4 class="fw-bold mb-0 text-danger" th:text="${dto.heartRate != null ? dto.heartRate + ' bpm' : '--'}">80 bpm</h4>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="p-3 border bg-white rounded text-center shadow-sm">
+                                                            <h6 class="text-muted mb-1">Saturação (O2)</h6>
+                                                            <h4 class="fw-bold mb-0 text-info" th:text="${dto.oxygenSaturation != null ? dto.oxygenSaturation + '%' : '--'}">98%</h4>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="p-3 border bg-white rounded text-center shadow-sm">
+                                                            <h6 class="text-muted mb-1">Escala de Glasgow</h6>
+                                                            <h4 class="fw-bold mb-0" th:text="${dto.glasgowScale != null ? dto.glasgowScale : '--'}">15</h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <h6 class="fw-bold mt-4 mb-2 text-secondary">Medicamentos Administrados (JSON)</h6>
+                                                <div class="p-3 bg-white border rounded">
+                                                    <code class="text-dark" th:text="${dto.administeredMedications != null ? dto.administeredMedications : 'Nenhum'}"></code>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer bg-light">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr th:if="${#lists.isEmpty(attendances)}">
+                            <td colspan="5" class="text-center text-muted p-5">
+                                <h5>Nenhum atendimento registrado</h5>
+                                <p class="mb-0">Aguardando sincronização de dados das unidades móveis.</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 
+    <!-- Script obrigatório do Bootstrap para o funcionamento dos Modais -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

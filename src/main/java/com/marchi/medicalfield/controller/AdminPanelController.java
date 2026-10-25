@@ -1,5 +1,7 @@
 package com.marchi.medicalfield.controller;
 
+import com.marchi.medicalfield.domain.repository.AttendanceRepository;
+import com.marchi.medicalfield.domain.repository.MedicalRecordRepository;
 import com.marchi.medicalfield.domain.repository.MedicationRepository;
 import com.marchi.medicalfield.domain.repository.PatientRepository;
 import com.marchi.medicalfield.domain.repository.ProfessionalRepository;
@@ -23,10 +25,14 @@ public class AdminPanelController
     @Autowired
     private PatientRepository patientRepository;
     
+    @Autowired
+    private AttendanceRepository attendanceRepository;
+    
     @GetMapping
     public String dashboard( Model model )
     {
         model.addAttribute( "titulo", "Painel Administrativo - MedicalField" );
+        model.addAttribute( "attendances", attendanceRepository.findAllDashboardData() );
         return "dashboard";
     }
     
