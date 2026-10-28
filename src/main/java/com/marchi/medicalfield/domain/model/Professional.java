@@ -7,6 +7,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table( name = "professionals" )
 public class Professional
@@ -22,6 +24,7 @@ public class Professional
     @Column( name = "name", nullable = false, length = 150 )
     private String name;
     
+    @JsonIgnore
     @Column( name = "password_hash", nullable = false )
     private String passwordHash;
     

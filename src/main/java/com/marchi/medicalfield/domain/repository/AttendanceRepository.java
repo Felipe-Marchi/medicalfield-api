@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 public interface AttendanceRepository
         extends JpaRepository<Attendance, AttendanceId>
 {
+    List<Attendance> findByIdPatientCpf(String patientCpf);
+    
     // Busca os dados de Atendimento, Paciente e Prontuário em uma única consulta
     @Query("SELECT new com.marchi.medicalfield.domain.dto.AttendanceDashboardDTO(" +
            "a.id.patientCpf, p.name, a.id.attendanceDatetime, a.triageClassification, " +
