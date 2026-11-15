@@ -72,12 +72,22 @@
                             </td>
                             
                             <td class="text-end">
-                                <!-- Botão 1: Medicamentos -->
-                                <button type="button" class="btn btn-primary btn-sm shadow-sm me-2" data-bs-toggle="modal" th:data-bs-target="'#modalRescue-' + ${iterStat.index}">
+                                <!-- Botão PDF (Visual) -->
+                                <button type="button" class="btn btn-outline-danger btn-sm shadow-sm me-1" title="Gerar Ficha de Atendimento em PDF">
+                                    📄 PDF
+                                </button>
+
+                                <!-- Botão E-mail (Visual) -->
+                                <button type="button" class="btn btn-outline-success btn-sm shadow-sm me-1" title="Enviar Ficha por E-mail">
+                                    ✉️ E-mail
+                                </button>
+
+                                <!-- Botão Medicamentos -->
+                                <button type="button" class="btn btn-primary btn-sm shadow-sm me-1" data-bs-toggle="modal" th:data-bs-target="'#modalRescue-' + ${iterStat.index}">
                                     Medicamentos
                                 </button>
                             
-                                <!-- Botão 2: Prontuário -->
+                                <!-- Botão Prontuário -->
                                 <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" th:data-bs-target="'#modalRecord-' + ${iterStat.index}">
                                     Prontuário
                                 </button>
@@ -110,12 +120,10 @@
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content border-0 shadow">
                                             <div class="modal-header bg-dark text-white">
-                                                <!-- Título atualizado -->
                                                 <h5 class="modal-title">Medicamentos Administrados</h5>
                                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
                                             </div>
                                             <div class="modal-body bg-light">
-                                                <!-- Caixa limpa exibindo apenas o JSON dos medicamentos -->
                                                 <div class="p-3 bg-white border rounded">
                                                     <code class="text-dark" th:text="${dto.administeredMedications != null ? dto.administeredMedications : 'Nenhum medicamento registrado neste atendimento.'}"></code>
                                                 </div>
