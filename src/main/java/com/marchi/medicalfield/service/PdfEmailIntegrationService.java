@@ -1,5 +1,6 @@
 package com.marchi.medicalfield.service;
 
+import com.marchi.medicalfield.domain.dto.AttendanceDashboardDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,21 +19,18 @@ public class PdfEmailIntegrationService {
     private String nodeApiUrl;
 
     private final RestTemplate restTemplate = new RestTemplate();
-
-    public byte[] generatePdf(String patientName, String medicalDetails) {
+    
+    public byte[] generatePdf( AttendanceDashboardDTO dto )
+    {
         String url = nodeApiUrl + "/generate-pdf";
         
-        Map<String, String> body = new HashMap<>();
-        body.put("patientName", patientName);
-        body.put("medicalDetails", medicalDetails);
-
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setContentType( MediaType.APPLICATION_JSON );
         
-        // Passando a entidade direto no método, sem criar variável
+        // O RestTemplate converte o 'dto' automaticamente para um JSON completo
         ResponseEntity<byte[]> response = restTemplate.postForEntity(
-                url, 
-                new HttpEntity<>(body, headers), 
+                url,
+                new HttpEntity<>( dto, headers ),
                 byte[].class
         );
         

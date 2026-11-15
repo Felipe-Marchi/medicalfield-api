@@ -77,24 +77,14 @@ public class AdminPanelController
             @RequestParam String cpf,
             @RequestParam @DateTimeFormat( iso = DateTimeFormat.ISO.DATE_TIME ) LocalDateTime datetime )
     {
-        
         // 1. Busca o DTO pronto com todos os dados
         AttendanceDashboardDTO dto = attendanceRepository.findDashboardDataById( cpf, datetime )
                                                          .orElseThrow( () -> new IllegalArgumentException( "Atendimento não encontrado." ) );
         
-        // 2. Monta os detalhes unindo prontuário e sinais vitais
-        String observacoes = dto.getMedicalRecordObservations() != null ? dto.getMedicalRecordObservations() : "Nenhuma observação registrada.";
-        String medicalDetails = observacoes + String.format( "\n\nSinais Vitais na Triagem (%s):\nGlasgow: %d\nPressão: %s\nFreq. Cardíaca: %s\nSaturação: %s",
-                                                             dto.getTriageClassification(),
-                                                             dto.getGlasgowScale(),
-                                                             dto.getBloodPressure() != null ? dto.getBloodPressure() : "--",
-                                                             dto.getHeartRate() != null ? dto.getHeartRate() + " bpm" : "--",
-                                                             dto.getOxygenSaturation() != null ? dto.getOxygenSaturation() + "%" : "--" );
+        // 2. Chama o Node.js passando o DTO inteiro
+        byte[] pdfBytes = pdfEmailService.generatePdf( dto );
         
-        // 3. Chama o Node.js
-        byte[] pdfBytes = pdfEmailService.generatePdf( dto.getPatientName(), medicalDetails );
-        
-        // 4. Configura o download
+        // 3. Configura o download
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType( MediaType.APPLICATION_PDF );
         headers.setContentDispositionFormData( "attachment", "ficha_atendimento.pdf" );
