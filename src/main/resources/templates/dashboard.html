@@ -72,7 +72,7 @@
                             </td>
                             
                             <td class="text-end">
-                                <!-- Botão PDF (Envia CPF e Data/Hora na URL para o Java) -->
+                                <!-- Botão PDF -->
                                 <a th:href="@{/medicalfield/attendances/pdf(cpf=${dto.patientCpf}, datetime=${dto.attendanceDatetime})}"
                                    target="_blank"
                                    class="btn btn-outline-danger btn-sm shadow-sm me-1"
@@ -80,13 +80,13 @@
                                     📄 PDF
                                 </a>
 
-                                <!-- Botão E-mail (Chama a função JavaScript passando CPF e Data/Hora) -->
+                                <!-- Botão E-mail -->
                                 <button type="button"
                                         class="btn btn-outline-success btn-sm shadow-sm me-1"
                                         title="Enviar Ficha por E-mail"
                                         th:data-cpf="${dto.patientCpf}"
                                         th:data-datetime="${dto.attendanceDatetime}"
-                                        onclick="solicitarEmail(this.getAttribute('data-cpf'), this.getAttribute('data-datetime'))">
+                                        onclick="abrirModalEmail(this.getAttribute('data-cpf'), this.getAttribute('data-datetime'))">
                                     ✉️ E-mail
                                 </button>
 
@@ -142,6 +142,31 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Modal de E-mail do Bootstrap -->
+                                <div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="emailModalLabel">Enviar Ficha por E-mail</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                            </div>
+                                            <div class="modal-body text-start">
+                                                <p class="mb-2">Digite o e-mail de destino para enviar a ficha do paciente:</p>
+
+                                                <!-- Campos ocultos para guardar a linha selecionada -->
+                                                <input type="hidden" id="modalCpf">
+                                                <input type="hidden" id="modalDatetime">
+
+                                                <input type="email" class="form-control" id="targetEmailInput" placeholder="exemplo@email.com" required>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <button type="button" class="btn btn-success" onclick="confirmarEnvioEmail()">Enviar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 
                             </td>
                         </tr>
@@ -187,12 +212,28 @@
     </script>
 
     <script>
-        // Função que abre a janela pedindo o e-mail e manda para o Java
-        function solicitarEmail(cpf, datetime) {
-            let email = prompt("Digite o e-mail de destino para enviar a ficha do paciente:");
+        // Função que guarda os dados da linha e exibe o modal
+        function abrirModalEmail(cpf, datetime) {
+            document.getElementById('modalCpf').value = cpf;
+            document.getElementById('modalDatetime').value = datetime;
+            document.getElementById('targetEmailInput').value = ''; // Limpa o campo
+            
+            // Abre o modal usando a instância do Bootstrap
+            let emailModal = new bootstrap.Modal(document.getElementById('emailModal'));
+            emailModal.show();
+        }
+        
+        // Função disparada ao clicar no botão "Enviar" dentro do modal
+        function confirmarEnvioEmail() {
+            let cpf = document.getElementById('modalCpf').value;
+            let datetime = document.getElementById('modalDatetime').value;
+            let email = document.getElementById('targetEmailInput').value;
             
             if (email != null && email.trim() !== "") {
                 window.location.href = `/medicalfield/attendances/email?cpf=${cpf}&datetime=${datetime}&targetEmail=` + encodeURIComponent(email);
+            } else {
+                alert("Por favor, digite um e-mail válido.");
+                document.getElementById('targetEmailInput').focus();
             }
         }
     </script>

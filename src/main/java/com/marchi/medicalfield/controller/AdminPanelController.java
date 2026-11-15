@@ -100,21 +100,14 @@ public class AdminPanelController
             @RequestParam String targetEmail,
             RedirectAttributes redirectAttributes )
     {
-        
         try
         {
+            // 1. Busca o DTO pronto
             AttendanceDashboardDTO dto = attendanceRepository.findDashboardDataById( cpf, datetime )
                                                              .orElseThrow( () -> new IllegalArgumentException( "Atendimento não encontrado." ) );
             
-            String observacoes = dto.getMedicalRecordObservations() != null ? dto.getMedicalRecordObservations() : "Nenhuma observação registrada.";
-            String medicalDetails = observacoes + String.format( "\n\nSinais Vitais na Triagem (%s):\nGlasgow: %d\nPressão: %s\nFreq. Cardíaca: %s\nSaturação: %s",
-                                                                 dto.getTriageClassification(),
-                                                                 dto.getGlasgowScale(),
-                                                                 dto.getBloodPressure() != null ? dto.getBloodPressure() : "--",
-                                                                 dto.getHeartRate() != null ? dto.getHeartRate() + " bpm" : "--",
-                                                                 dto.getOxygenSaturation() != null ? dto.getOxygenSaturation() + "%" : "--" );
-            
-            pdfEmailService.sendEmail( dto.getPatientName(), medicalDetails, targetEmail );
+            // 2. Passa o DTO e o e-mail destino diretamente para o Service
+            pdfEmailService.sendEmail( dto, targetEmail );
             
             redirectAttributes.addFlashAttribute( "mensagemSucesso", "E-mail enviado com sucesso para " + targetEmail );
         }

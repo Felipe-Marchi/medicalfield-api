@@ -36,22 +36,19 @@ public class PdfEmailIntegrationService {
         
         return response.getBody();
     }
-
-    public void sendEmail(String patientName, String medicalDetails, String targetEmail) {
-        String url = nodeApiUrl + "/send-email";
-
-        Map<String, String> body = new HashMap<>();
-        body.put("patientName", patientName);
-        body.put("medicalDetails", medicalDetails);
-        body.put("targetEmail", targetEmail);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+    
+    public void sendEmail( AttendanceDashboardDTO dto, String targetEmail )
+    {
+        // Adiciona o e-mail na URL para deixar o corpo da requisição exclusivo para o DTO
+        String url = nodeApiUrl + "/send-email?targetEmail=" + targetEmail;
         
-        // Passando a entidade direto no método, sem criar variável
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType( MediaType.APPLICATION_JSON );
+        
+        // Converte o DTO automaticamente para JSON
         restTemplate.postForEntity(
-                url, 
-                new HttpEntity<>(body, headers), 
+                url,
+                new HttpEntity<>( dto, headers ),
                 String.class
         );
     }
