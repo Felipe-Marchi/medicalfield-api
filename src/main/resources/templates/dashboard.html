@@ -63,7 +63,9 @@
                                 <span class="badge rounded-pill text-uppercase" 
                                       th:classappend="${#strings.equalsIgnoreCase(dto.triageClassification, 'Vermelho')} ? 'bg-danger' : 
                                                      (${#strings.equalsIgnoreCase(dto.triageClassification, 'Amarelo')} ? 'bg-warning text-dark' : 
-                                                     (${#strings.equalsIgnoreCase(dto.triageClassification, 'Verde')} ? 'bg-success' : 'bg-secondary'))"
+                                                     (${#strings.equalsIgnoreCase(dto.triageClassification, 'Verde')} ? 'bg-success' :
+                                                     (${#strings.equalsIgnoreCase(dto.triageClassification, 'Azul')} ? 'bg-primary' : '')))"
+                                      th:styleappend="${#strings.equalsIgnoreCase(dto.triageClassification, 'Laranja')} ? 'background-color: #fd7e14; color: white;' : ''"
                                       th:text="${dto.triageClassification}">
                                     VERMELHO
                                 </span>
