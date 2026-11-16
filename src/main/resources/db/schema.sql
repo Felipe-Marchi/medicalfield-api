@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS medical_records;
 DROP TABLE IF EXISTS patients;
 DROP TABLE IF EXISTS medications;
 DROP TABLE IF EXISTS professionals;
+DROP TABLE IF EXISTS system_logs;
 
 -- 1. Profissionais
 CREATE TABLE professionals (
@@ -52,4 +53,17 @@ CREATE TABLE attendances (
     PRIMARY KEY (patient_cpf, attendance_datetime),
     CONSTRAINT fk_attendance_record FOREIGN KEY (patient_cpf) REFERENCES medical_records(patient_cpf) ON DELETE RESTRICT,
     CONSTRAINT fk_attendance_professional FOREIGN KEY (professional_id) REFERENCES professionals(id) ON DELETE RESTRICT
+);
+
+-- 6. Logs do Sistema
+CREATE TABLE system_logs (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    professional_id INT,               -- ID do usuário (pode ser nulo antes do login)
+    client_ip VARCHAR(45),             -- IP do Cliente
+    http_method VARCHAR(10) NOT NULL,  -- Método HTTP (GET, POST, etc)
+    route VARCHAR(255) NOT NULL,       -- Rota acessada
+    status_code INT NOT NULL,          -- Status Code (200, 401, 500)
+    processing_time_ms BIGINT NOT NULL,-- Tempo de Processamento (ms)
+    message TEXT                       -- Detalhes extras (opcional)
 );
