@@ -20,7 +20,10 @@
                         <a class="nav-link" th:href="@{/medicalfield/professionals}">Profissionais</a>
                     </li>
                 </ul>
-                <div class="d-flex">
+                <div class="d-flex align-items-center">
+                    
+                    <a class="btn btn-outline-info btn-sm me-3" th:href="@{/medicalfield/logs}">📋 Logs de Auditoria</a>
+                    
                     <form th:action="@{/logout}" method="post">
                         <button class="btn btn-outline-light btn-sm" type="submit">Sair</button>
                     </form>
