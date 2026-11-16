@@ -8,6 +8,7 @@ import com.marchi.medicalfield.domain.repository.MedicalRecordRepository;
 import com.marchi.medicalfield.domain.repository.MedicationRepository;
 import com.marchi.medicalfield.domain.repository.PatientRepository;
 import com.marchi.medicalfield.domain.repository.ProfessionalRepository;
+import com.marchi.medicalfield.domain.repository.SystemLogRepository;
 import com.marchi.medicalfield.service.PdfEmailIntegrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -35,6 +36,9 @@ public class AdminPanelController
     
     @Autowired
     private PatientRepository patientRepository;
+    
+    @Autowired
+    private SystemLogRepository systemLogRepository;
     
     @Autowired
     private AttendanceRepository attendanceRepository;
@@ -69,6 +73,13 @@ public class AdminPanelController
     {
         model.addAttribute( "patients", patientRepository.findAll() );
         return "patients";
+    }
+    
+    @GetMapping( "/logs" )
+    public String viewLogs( Model model )
+    {
+        model.addAttribute( "logs", systemLogRepository.findAllByOrderByTimestampDesc() );
+        return "logs";
     }
     
     // --- ROTA DO PDF ---
