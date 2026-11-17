@@ -10,6 +10,7 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/medicalfield}">Atendimentos</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/medicalfield/patients}">Pacientes</a>
                     </li>
@@ -19,11 +20,14 @@
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/medicalfield/professionals}">Profissionais</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/medicalfield/logs}">Logs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/medicalfield/architecture}">Arquitetura</a>
+                    </li>
                 </ul>
-                <div class="d-flex align-items-center">
-                    
-                    <a class="btn btn-outline-info btn-sm me-3" th:href="@{/medicalfield/logs}">📋 Logs de Auditoria</a>
-                    
+                <div class="d-flex">
                     <form th:action="@{/logout}" method="post">
                         <button class="btn btn-outline-light btn-sm" type="submit">Sair</button>
                     </form>

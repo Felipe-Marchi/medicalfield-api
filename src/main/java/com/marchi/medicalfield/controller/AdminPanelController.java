@@ -81,6 +81,13 @@ public class AdminPanelController
         model.addAttribute( "logs", systemLogRepository.findAllByOrderByTimestampDesc() );
         return "logs";
     }
+
+    @GetMapping( "/architecture" )
+    public String viewArchitecture( Model model )
+    {
+        model.addAttribute( "titulo", "Arquitetura do Sistema - MedicalField" );
+        return "architecture";
+    }
     
     // --- ROTA DO PDF ---
     @GetMapping( "/attendances/pdf" )
