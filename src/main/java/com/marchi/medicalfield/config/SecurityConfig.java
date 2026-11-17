@@ -39,7 +39,10 @@ public class SecurityConfig {
                         "/assets/**",
                         "/*.png",
                         "/*.ico",
-                        "/error"
+                        "/error",
+                        "/v3/api-docs/**",     // Libera o JSON da documentação
+                        "/swagger-ui/**",      // Libera a interface visual do Swagger
+                        "/swagger-ui.html"
                 )
                 .permitAll()
                 // 2. EXIGE AUTENTICAÇÃO OBRIGATÓRIA PARA TODAS AS OUTRAS ROTAS DO SISTEMA
