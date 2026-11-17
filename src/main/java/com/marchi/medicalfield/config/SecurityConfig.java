@@ -5,6 +5,7 @@ import com.marchi.medicalfield.domain.repository.ProfessionalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -26,40 +27,42 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf( AbstractHttpConfigurer::disable ) // Desativa proteção CSRF temporariamente para não bloquear o Postman
-                .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/medicalfield/**").authenticated() // Exige login para qualquer rota que comece com /admin
-                .anyRequest().permitAll() // Deixa as APIs de celular (pacientes, atendimentos) totalmente abertas
+            .csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(auth -> auth
+                // 1. Libera EXCLUSIVAMENTE a página e os endpoints de Login + recursos estáticos
+                .requestMatchers("/login", "/professionals/login", "/css/**", "/js/**", "/images/**").permitAll()
+                // 2. EXIGE AUTENTICAÇÃO OBRIGATÓRIA PARA TODAS AS OUTRAS ROTAS DO SISTEMA
+                .anyRequest().authenticated()
             )
-                .formLogin(form -> form
-                .loginPage( "/login" ) // Informa a página de login customizada
-                .defaultSuccessUrl("/medicalfield", true) // Após logar, joga o usuário para o dashboard
-                .permitAll() // Libera a página de login para todos
+            .formLogin(form -> form
+                .loginPage("/login")
+                .defaultSuccessUrl("/medicalfield", true)
+                .permitAll()
             )
-                .logout(logout -> logout
+            .logout(logout -> logout
                 .logoutSuccessUrl("/login")
                 .permitAll()
-            );
+            )
+            // Permite autenticação HTTP Basic para chamadas de API (Postman / App móvel)
+            .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }
 
-    // Serviço que busca o usuário no banco de dados quando ele tenta logar
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
             Professional professional = professionalRepository.findByUsername(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
+                    .orElseThrow(() -> new UsernameNotFoundException("Profissional não encontrado com credencial: " + username));
 
             return User.builder()
                     .username(professional.getUsername())
                     .password(professional.getPasswordHash())
-                    .roles("ADMIN") // Cargo fictício apenas para controle interno do Spring
+                    .roles("PROFESSIONAL")
                     .build();
         };
     }
 
-    // O Spring Security exige que as senhas sejam criptografadas no banco (Padrão de mercado BCrypt)
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
