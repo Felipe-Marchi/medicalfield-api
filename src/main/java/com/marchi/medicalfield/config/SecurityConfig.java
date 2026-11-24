@@ -29,7 +29,7 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
-                // 1. Libera EXCLUSIVAMENTE a página e os endpoints de Login + recursos estáticos
+                // Libera EXCLUSIVAMENTE a página e os endpoints de Login + recursos estáticos
                 .requestMatchers(
                         "/login",
                         "/professionals/login",
@@ -45,7 +45,7 @@ public class SecurityConfig {
                         "/swagger-ui.html"
                 )
                 .permitAll()
-                // 2. EXIGE AUTENTICAÇÃO OBRIGATÓRIA PARA TODAS AS OUTRAS ROTAS DO SISTEMA
+                // EXIGE AUTENTICAÇÃO OBRIGATÓRIA PARA TODAS AS OUTRAS ROTAS DO SISTEMA
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
