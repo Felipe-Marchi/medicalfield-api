@@ -34,3 +34,14 @@ build/
 
 ### Senhas e Configurações Locais ###
 src/main/resources/application.properties
+
+# Node.js
+node_modules/
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Logs
+*.log
